@@ -16,16 +16,18 @@ SALib==1.3.13
 
 This repository contains solvers for a reaction-advection-diffusion PDE in 1D, 2D cartesian, and 2D axisymmetric (r-z). The solver files
 
-Solver1D.py
-Solver2D.py
-Solver2Daxi.py
+- Solver1D.py
+
+- Solver2D.py
+
+- Solver2Daxi.py
 
 each contain required functions to solve the equations at each timestep as a matrix problem, where the equation has been discretised using finite differences and is solver numerically using spsolve.  
 
 The manager files
 
-Manager1D.py
-Manager2D.py
+- Manager1D.py
+- Manager2D.py
 
 use the appropriate solvers to solve the PDE for given parameters, time and geometry.  
 
