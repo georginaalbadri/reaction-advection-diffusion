@@ -17,7 +17,9 @@ pytest==4.3.1
 scipy==1.2.1
 SALib==1.3.13
 
-## Solvers
+## Introduction
+
+### Solvers
 
 This repository contains solvers for a reaction-advection-diffusion PDE in 1D, 2D cartesian, and 2D axisymmetric (r-z). The solver files
 
@@ -41,7 +43,7 @@ The parameter sweep function files
 
 enable the functions to be solved for a range of parameters and/or timepoints to visually compare. 
 
-## Applications 
+### Applications 
 
 Additionally, the repository contains two applications: Sensitivity Analysis and Parameter Optimisation. 
 
@@ -61,21 +63,21 @@ use the Python library Pyswarms to optimise input parameters to match a set mode
 
 ### Variables
 
-- 'c': solute 
-- 'u', 'v': x, y components of solvent velocity (1D/2D cartesian)
-- 'u', 'v': z, r components of solvent velocity (2D axisymmetric)
-- 'w': water volume fraction (w=1 if modelling solute in liquid; w<1 if modelling solute in liquid within solid/rigid porous scaffold). 
+- `c` : solute 
+- `u`, `v` : x, y components of solvent velocity (1D/2D cartesian)
+- `u`, `v` : z, r components of solvent velocity (2D axisymmetric)
+- `w` : water volume fraction (w=1 if modelling solute in liquid; w<1 if modelling solute in liquid within solid/rigid porous scaffold). 
 
 ### Parameters
-- 'D': diffusion coefficient of solute
-- 'alpha': production rate of solute
-- 'delta': degradation rate of solute
-- 'kappa': uptake rate of solution (Michaelis-Menten kinetics)
-- 'K': concentration of solute at which uptake is half-maximal (Michaelis-Menten kinetics)
-- 'dt': timestep
-- 'h': grid spacing 
-- 'L': height/length of model geometry 
-- 'T': typical time 
+- `D` : diffusion coefficient of solute
+- `alpha` : production rate of solute
+- `delta` : degradation rate of solute
+- `kappa` : uptake rate of solution (Michaelis-Menten kinetics)
+- `K` : concentration of solute at which uptake is half-maximal (Michaelis-Menten kinetics)
+- `dt` : timestep
+- `h` : grid spacing 
+- `L` : height/length of model geometry 
+- `T` : typical time 
 
 ## File structure
 
