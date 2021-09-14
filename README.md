@@ -87,7 +87,7 @@ use the Python library Pyswarms to optimise input parameters to match a set mode
 
 Manager*.py OR Parameter Sweep*.py
 
-Requires Solver 
+Requires Solver and Preliminary 
 
 ### Supporting files
 
