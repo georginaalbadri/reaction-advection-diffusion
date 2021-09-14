@@ -38,9 +38,8 @@ def rad_solver_1D(c0, n, w, vw, param_dict):
     dt - timestep 
 
     """
-    L, T, ny, dy, dy2, phi, m, dt, cint, Pe, alpha, kappa, K, delta = param_dict.values()
+    L, T, ny, dy, dy2, phi, m, dt, cint, Dc, alpha, kappa, K, delta = param_dict.values()
 
-    Dc = 1 / Pe #FIX #TODO 
     #-- Matrix A (to construct Ac = B matrix equation)
 
     A = np.zeros((ny, ny))
@@ -51,7 +50,6 @@ def rad_solver_1D(c0, n, w, vw, param_dict):
         + (vw[0] / (2 * dy)) * (- 3 * w[0] + 4 * w[1] - w[2]) + ((2 * Dc * w[0]) / dy2) + delta
         
     A[0, 1] = - ((2 * Dc * w[0]) / dy2) 
-
 
     for i in range(1, ny-1):
         A[i, i] = (w[i] / dt) + (w[i] / (2 * dy)) * (vw[i+1] - vw[i-1]) \

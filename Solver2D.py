@@ -91,8 +91,7 @@ def rad_solver_2Daxi(c0, w, n, uw, vw, param_dict):
 
     """
 
-    L, T, nx, ny, dy, dy2, phi, m, dt, cint, Pe, alpha, kappa, K, delta = param_dict.values()
-    D = 1 / Pe #FIX #TODO 
+    L, T, nx, ny, dy, dy2, phi, m, dt, cint, D, alpha, kappa, K, delta = param_dict.values()
 
     #-- First diagonal matrix C (arises from line of symmetry boundary, valid for j=0)
     # alternative form of B_matrix at boundary 

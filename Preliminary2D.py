@@ -113,23 +113,23 @@ def InputSoluteParameters(parameters_dict, c_int = 0, D = 1e-11, alpha = 1e-11, 
     T = parameters_dict['T']
     cM = 1e-9 #concentration ng/ml
 
-    Pe = L**2 / (T * D) #non-dim Peclet number
+    D1 = D * T / L**2
 
-    alpha1 = (alpha * L**2) / (D * cM) #non-dim production rate 
-    kappa1 = (kappa * L**2) / (D * cM) #non-dim production rate 
-    delta1 = (delta * L**2) / D #non-dim degradation rate 
+    alpha1 = (alpha * T / cM) #non-dim production rate 
+    kappa1 = (kappa * T / cM) #non-dim production rate 
+    delta1 = (delta * T) #non-dim degradation rate 
 
     #-- set appropriate timestep based on explicit FD scheme limits 
     #dt_mult scales this timestep 
     dx2 = parameters_dict['dx2']
-    maxtimestep = (dx2 * Pe / 2 )
+    maxtimestep = (dx2 / (2 * D1) )
     dt = dt_mult * maxtimestep
     dt = dt
 
     #-- update parameters dictionary
     parameters_dict["dt"] = dt
     parameters_dict['c0'] = c0 
-    parameters_dict["Pe"] = Pe
+    parameters_dict["D"] = D1
     parameters_dict["alpha"] = alpha1
     parameters_dict["kappa"] = kappa1
     parameters_dict["K"] = K

@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 from Preliminary1D import InputVariables
 from Preliminary1D import InputSoluteParameters
 from Solver1D import rad_solver_1D
+from ParameterSweep1D import ParamSweep1D
 
 import time 
 from tqdm import tqdm
@@ -70,7 +71,6 @@ plt.title(f'Solute distribution at T = 0 and T = {Tmax}')
 plt.savefig(f'solute_dist_T{Tmax}.png', dpi = 300)
 
 
-"""
 #--------------------------------------------------------------------#
 
 # Run parameter sweep for 1D reaction-advection-diffusion model
@@ -78,7 +78,7 @@ plt.savefig(f'solute_dist_T{Tmax}.png', dpi = 300)
 #--------------------------------------------------------------------#
 
 #-- set problem geometry 
-L = 5  #length-scale [mm]
+L = 5e-3  #length-scale [m]
 T = 1e5  #timescale [s]
 
 nx = 500 #number of grid points
@@ -91,10 +91,11 @@ geometry_dict =  {'L':L, 'T':T, 'nx':nx, 'dx':dx, 'dx2':dx2}
 n, w, uw, parameter_dict = InputVariables(geometry_dict, n_option = "random", nmin = 0.1, nmax = 0.2, m = 0.03)
 
 #-- set initial condition and solute parameters
-c0, param_dict = InputSoluteParameters(parameter_dict, c_int = 0, D = 1e-11, alpha = 1e-12, kappa = 1e-13, K = 0.1, delta = 2.5*1e-4, dt_mult = 1000)
+c0, param_dict = InputSoluteParameters(parameter_dict, c_int = 1, D = 1e-10, dt_mult = 100)
 
+param_list = [1e-13, 1e-12, 1e-11]
+tlist = [0.2, 0.4, 0.6, 0.8]
 
 
 #-- run parameter sweep for specified parameter
-ParamSweep(paramlist, var_dict, param_dict, tlist, param_name = 'D1', T = 10, plot_type = 'time, space', subplot = not None, save = not None)
-"""
+ParamSweep1D(c0, n, w, uw, param_list, param_dict, tlist, param_name = 'alpha', Tmax = 1, plot_type = 'time')
