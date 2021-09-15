@@ -29,6 +29,13 @@ This repository contains solvers for a reaction-advection-diffusion PDE in 1D, 2
 
 each contain required functions to solve the equations at each timestep as a matrix problem, where the equation has been discretised using finite differences and is solver numerically using spsolve.  
 
+The parameter sweep function files 
+
+- ParameterSweep1D.py
+- ParameterSweep2D.py 
+
+are an alternative, based on the Solvers, to enable the functions to be solved for a range of parameters and/or timepoints to visually compare outcomes. 
+
 ### Managers
 
 The manager files
@@ -38,12 +45,6 @@ The manager files
 
 use the appropriate solvers to solve the PDE for given parameters, time and geometry.  
 
-The parameter sweep function files 
-
-- ParameterSweep1D.py
-- ParameterSweep2D.py 
-
-are an alternative to enable the functions to be solved for a range of parameters and/or timepoints to visually compare outcomes. 
 
 ### Applications 
 
