@@ -46,7 +46,7 @@ def ParamSweep1D(c0, n, w, uw, param_list, param_dict, param_name = 'D', Tmax = 
 
         if param_name in ['alpha', 'kappa']:
             D = param_dict['D']
-            D1 = D * L * L / T
+            D1 = D * L * L / T #redimensionalise D
             param_dict[param_name] = (val * L * L) / (D1 * cM)
 
         if param_name in ['delta']:
@@ -62,6 +62,7 @@ def ParamSweep1D(c0, n, w, uw, param_list, param_dict, param_name = 'D', Tmax = 
 
         for t in range(nsteps+1):
             c = rad_solver_1D(c0, n, w, uw, param_dict)
+            c0 = c.copy()
 
         #save result for each parameter value
         clist.append(c[:])

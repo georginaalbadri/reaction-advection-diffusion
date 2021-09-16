@@ -12,11 +12,11 @@ from tqdm import tqdm
 
 
 
-#------------------------------------------#
+#-------------------------------------------------#
 
 # Run 1D reaction-advection-diffusion model
 
-#------------------------------------------#
+#-------------------------------------------------#
 
 #-- set problem geometry 
 L = 5e-3  #length-scale [m]
@@ -59,7 +59,6 @@ for t in tqdm(range(nsteps)):
     c = rad_solver_1D(c0, n, w, uw, param_dict)
     c0 = c.copy() #update previous timestep value
 
-
 #-- plot initial and final distribution on same graph
 cint = param_dict['c0']
 
@@ -93,7 +92,7 @@ n, w, uw, parameter_dict = InputVariables(geometry_dict, n_option = "sinusoidal"
 #-- set initial condition and solute parameters
 c0, param_dict = InputSoluteParameters(parameter_dict, c_int = 0, D = 1e-10, dt_mult = 1)
 
-param_list = [1e-10, 1e-8, 1e-6]
+param_list = [1e-14, 1e-13, 1e-12]
 
 #-- run parameter sweep for specified parameter
-ParamSweep1D(c0, n, w, uw, param_list, param_dict, param_name = 'D', Tmax = 0.3)
+ParamSweep1D(c0, n, w, uw, param_list, param_dict, param_name = 'kappa', Tmax = 0.1)
