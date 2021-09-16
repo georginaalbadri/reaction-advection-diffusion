@@ -38,7 +38,8 @@ problem = {
 }
 
 # use saltelli sampler to generate parameter samples within bounds given 
-param_values = saltelli.sample(problem, 32)
+# number argument in sample should be large as possible (by <1000) for high confidence values 
+param_values = saltelli.sample(problem, 512)
 nparams = len(param_values)
 print(f'number of parameter samples to run = {nparams}')
 
@@ -106,7 +107,7 @@ def multiprocessing_func(param_values_sample):
 if __name__ == '__main__':
 
     # choose number of processes to run based on number of cpus of machine 
-    num_cpu = mp.cpu_count() #- 2
+    num_cpu = mp.cpu_count() - 1
     print(f'Running on {num_cpu} threads')
 
     start_time = time.time()
@@ -158,8 +159,11 @@ if __name__ == '__main__':
     ST_set = ST['ST']
     ST_conf = ST['ST_conf']
 
+    #print list of parameter names
     print(problem['names'])
+    #print list of sensitivity values (in order as above)
     print(ST_set)
+    #print list of confidence values 
     print(ST_conf)
 
     #----------------- PLOT SA RESULTS - optional - for MULTIPLE TIMEPOINTS only  ----------------#
