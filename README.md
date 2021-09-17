@@ -21,7 +21,7 @@ pyswarms==1.1.0
 
 ### Solvers
 
-This repository contains solvers for a reaction-advection-diffusion PDE in 1D, 2D cartesian, and 2D axisymmetric (r-z). The solver files
+This repository contains solvers for a reaction-advection-diffusion PDE in 1D and 2D axisymmetric (r-z axis). The solver files
 
 - Solver1D.py
 - Solver2D.py (axisymmetric)
