@@ -32,7 +32,7 @@ geometry_dict =  {'L':L, 'T':T, 'nx':nx, 'dx':dx, 'dx2':dx2}
 n, w, uw, parameter_dict = InputVariables(geometry_dict, n_option = "sinusoidal", nmin = 0.1, nmax = 0.2, m = 0.03)
 
 #-- set initial condition and solute parameters
-c0, param_dict = InputSoluteParameters(parameter_dict, c_int = 0, D = 1e-10, dt_mult = 1)
+c0, param_dict = InputSoluteParameters(parameter_dict, c_int = 0, D = 1e-10, dt_mult = 10)
 
 
 #-- plot initial distribution
@@ -43,7 +43,7 @@ c0, param_dict = InputSoluteParameters(parameter_dict, c_int = 0, D = 1e-10, dt_
 
 
 #-- calculate number of timesteps to run 
-Tmax = 0.1 #maximum time to run [1e5 seconds]
+Tmax = 0.5 #maximum time to run 
 dt = param_dict['dt']
 nsteps = int(Tmax/dt)
 
@@ -69,7 +69,7 @@ plt.legend(('T = 0', f'T = {Tmax}'))
 plt.title(f'Solute distribution at T = 0 and T = {Tmax}')
 plt.savefig(f'solute_dist_T{Tmax}.png', dpi = 300)
 
-
+"""
 #--------------------------------------------------------------------#
 
 # Run parameter sweep for 1D reaction-advection-diffusion model
@@ -90,9 +90,11 @@ geometry_dict =  {'L':L, 'T':T, 'nx':nx, 'dx':dx, 'dx2':dx2}
 n, w, uw, parameter_dict = InputVariables(geometry_dict, n_option = "sinusoidal", nmin = 0.1, nmax = 0.2, m = 0.03)
 
 #-- set initial condition and solute parameters
-c0, param_dict = InputSoluteParameters(parameter_dict, c_int = 0, D = 1e-10, dt_mult = 1)
+c0, param_dict = InputSoluteParameters(parameter_dict, c_int = 0, D = 1e-10, dt_mult = 10)
 
-param_list = [1e-14, 1e-13, 1e-12]
+param_list = [1e-13, 1e-12, 1e-11]
 
 #-- run parameter sweep for specified parameter
-ParamSweep1D(c0, n, w, uw, param_list, param_dict, param_name = 'kappa', Tmax = 0.1)
+ParamSweep1D(c0, n, w, uw, param_list, param_dict, param_name = 'alpha', Tmax = 0.5)
+
+"""
