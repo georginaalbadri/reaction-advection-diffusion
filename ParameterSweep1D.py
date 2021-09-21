@@ -1,8 +1,7 @@
+from Preliminary1D import Nondimensionalise
 import matplotlib.pyplot as plt
 import numpy as np
 from tqdm import tqdm
-import sys
-
 from Solver1D import rad_solver_1D
 
 
@@ -34,28 +33,10 @@ def ParamSweep1D(c0, n, w, uw, param_list, param_dict, param_name = 'D', Tmax = 
     for val in tqdm(param_list):
 
         #change parameter value in dictionary to current sweep value (nondimensionalise)
-
-        L = param_dict['L']
-        T = param_dict['T']
-        cM = 1e-9 #typical solute concentration [ng/ml]
+        
+        newval = Nondimensionalise(param_dict, dimval = val, param_name = param_name)
     
-        if param_name in ['D']:
-            D = param_dict['D'] #extract original diffusion array
-            D = (T * val) / (L**2) #replace diffusion in gel with new (non-dimensionalised) sweep value
-            param_dict['D'] = D #reinstate new diffusion array
-
-        if param_name in ['alpha', 'kappa']:
-            D = param_dict['D']
-            D1 = D * L * L / T #redimensionalise D
-            param_dict[param_name] = (val * L * L) / (D1 * cM)
-
-        if param_name in ['delta']:
-            D = param_dict['D']
-            D1 = D * L * L / T
-            param_dict['delta'] = val * L * L / D1
-
-        if param_name in ['K']:
-            param_dict['K'] = val / cM
+        param_dict[param_name] = newval
 
         #reset initial solute concentration
         c0 = param_dict['c0']

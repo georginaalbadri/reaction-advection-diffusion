@@ -73,6 +73,27 @@ def InputVariables(parameters_dict, n_option = "random", nmin = 0.1, nmax = 0.2,
     return n, w, uw, parameters_dict
 
 
+def Nondimensionalise(parameter_dict, cM = 1e-9, dimval = 1e-10, param_name = 'D'):
+
+    L = parameter_dict['L']
+    T = parameter_dict['T']
+
+    #nondimensionalise as appropriate
+    if param_name in ['D']:
+        val = (T * dimval) / (L**2) 
+
+    if param_name in ['alpha', 'kappa']:
+        val = (dimval * T / cM)
+
+    if param_name in ['delta']:
+        val = dimval * T 
+
+    if param_name in ['K']:
+        val = dimval / cM
+
+    return val
+
+
 #------------------------------------------------------#
 
 # SOLUTE INITIAL CONDITIONS AND PARAMETERS
@@ -80,7 +101,7 @@ def InputVariables(parameters_dict, n_option = "random", nmin = 0.1, nmax = 0.2,
 #------------------------------------------------------#
     
 
-def InputSoluteParameters(parameters_dict, c_int = 0, D = 1e-10, alpha = 1e-12, kappa = 1e-13, K = 0.1, delta = 2.5*1e-4, dt_mult = 10):
+def InputSoluteParameters(parameters_dict, cM = 1e-9, c_int = 0, D = 1e-10, alpha = 1e-11, kappa = 1e-14, K = 0.05, delta = 5*1e-5, dt_mult = 10):
     
     """
     Updates variable dictionary with solute concentration initial conditions, and updates parameter dictionary with solute parameter values
@@ -106,13 +127,11 @@ def InputSoluteParameters(parameters_dict, c_int = 0, D = 1e-10, alpha = 1e-12, 
     #-- nondimensionalise parameters
     L = parameters_dict['L']
     T = parameters_dict['T']
-    cM = 1e-9 #concentration ng/ml
 
-    D1 = D * T / L**2
-
-    alpha1 = (alpha * T / cM) #non-dim production rate 
-    kappa1 = (kappa * T / cM) #non-dim production rate 
-    delta1 = (delta * T) #non-dim degradation rate 
+    D1 = Nondimensionalise(parameters_dict, param_name = 'D', dimval = D)
+    alpha1 = Nondimensionalise(parameters_dict, param_name = 'alpha', dimval = alpha)
+    kappa1 = Nondimensionalise(parameters_dict, param_name = 'kappa', dimval = kappa)
+    delta1 = Nondimensionalise(parameters_dict, param_name = 'delta', dimval = delta)
 
     #-- set appropriate timestep based on explicit FD scheme limits 
     #dt_mult scales this timestep 
@@ -130,3 +149,6 @@ def InputSoluteParameters(parameters_dict, c_int = 0, D = 1e-10, alpha = 1e-12, 
     parameters_dict["delta"] = delta1
 
     return c0, parameters_dict 
+
+
+
