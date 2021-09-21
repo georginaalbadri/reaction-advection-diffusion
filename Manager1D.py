@@ -1,15 +1,14 @@
 
 import numpy as np
 import matplotlib.pyplot as plt
+import time 
+from tqdm import tqdm
 
 from Preliminary1D import InputVariables
 from Preliminary1D import InputSoluteParameters
 from Solver1D import rad_solver_1D
 from ParameterSweep1D import ParamSweep1D
-
-import time 
-from tqdm import tqdm
-
+from ParameterSweep1D import ParamSweepPlot1D
 
 
 #-------------------------------------------------#
@@ -58,6 +57,7 @@ start_time = time.time()
 for t in tqdm(range(nsteps)):
     c = rad_solver_1D(c0, n, w, uw, param_dict)
     c0 = c.copy() #update previous timestep value
+    print
 
 #-- plot initial and final distribution on same graph
 cint = param_dict['c0']
@@ -69,7 +69,7 @@ plt.legend(('T = 0', f'T = {Tmax}'))
 plt.title(f'Solute distribution at T = 0 and T = {Tmax}')
 plt.savefig(f'solute_dist_T{Tmax}.png', dpi = 300)
 
-"""
+
 #--------------------------------------------------------------------#
 
 # Run parameter sweep for 1D reaction-advection-diffusion model
@@ -94,7 +94,12 @@ c0, param_dict = InputSoluteParameters(parameter_dict, c_int = 0, D = 1e-10, dt_
 
 param_list = [1e-13, 1e-12, 1e-11]
 
-#-- run parameter sweep for specified parameter
-ParamSweep1D(c0, n, w, uw, param_list, param_dict, param_name = 'alpha', Tmax = 0.5)
+Tmax = 1
+dt = param_dict['dt']
+nsteps = int(Tmax / dt)
 
-"""
+#-- run parameter sweep for specified parameter
+clist = ParamSweep1D(c0, n, w, uw, param_list, param_dict, param_name = 'alpha', nsteps = nsteps)
+
+#-- plot results on single figure 
+ParamSweepPlot1D(param_dict, clist, param_list, param_name = 'alpha')

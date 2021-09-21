@@ -20,11 +20,7 @@ from Solver1D import rad_solver_1D
     delta - solute decay rate (independent of cells) [1/s] 
 """
 
-def ParamSweep1D(c0, n, w, uw, param_list, param_dict, param_name = 'D', Tmax = 1):
-
-    dt = param_dict['dt']
-    nsteps = int(Tmax / dt)
-    print(nsteps)
+def ParamSweep1D(c0, n, w, uw, param_list, param_dict, param_name = 'D', nsteps = 10):
 
     clist = []
 
@@ -33,7 +29,7 @@ def ParamSweep1D(c0, n, w, uw, param_list, param_dict, param_name = 'D', Tmax = 
     for val in tqdm(param_list):
 
         #change parameter value in dictionary to current sweep value (nondimensionalise)
-        
+
         newval = Nondimensionalise(param_dict, dimval = val, param_name = param_name)
     
         param_dict[param_name] = newval
@@ -48,6 +44,9 @@ def ParamSweep1D(c0, n, w, uw, param_list, param_dict, param_name = 'D', Tmax = 
         #save result for each parameter value
         clist.append(c[:])
 
+    return clist
+
+def ParamSweepPlot1D(param_dict, clist, param_list, param_name = 'D'):
 
     #-- plot graph of results 
     
