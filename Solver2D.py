@@ -97,24 +97,23 @@ def rad_solver_2Daxi(c0, w, n, uw, vw, param_dict):
     # alternative form of B_matrix at boundary 
     C = sparse.lil_matrix((ny, ny))
 
+    #removed v=0 term + (dy * vw[0, 0] / D) * (-3*w[0, 0] + 4 * w[0, 1] - w[0, 2])
     C[0, 0] = (6 * w[0, 0]) + delta + (dy2  * w[0, 0] / (D * dt)) \
         + (dy * w[0, 0] / D) * (-3*vw[0, 0] + 4 * vw[0, 1] - vw[0, 2])  \
         + (dy * w[0, 0]/ (2 * D)) * (-3*uw[0, 0] + 4*uw[1, 0] - uw[2, 0]) + (dy * uw[0, 0] / (2 * D)) * (-3 * w[0, 0] + 4 * w[1, 0] - w[2, 0])
-    
     C[0, 1] = - 2 * w[0, 0] 
 
+    # removed v=0 term + (dy * vw[i, 0] / D) * (-3*w[i, 0] + 4 * w[i, 1] - w[i, 2])
     for i in range(1, ny-1):
         C[i, i] = (6 * w[i, 0]) + delta + (dy2  * w[i, 0] / (D * dt)) \
         + (dy * w[i, 0] / D) * (-3*vw[i, 0] + 4 * vw[i, 1] - vw[i, 2])  \
         + (dy * w[i, 0]/ (2 * D)) * (uw[i+1, 0] - uw[i-1, 0]) + (dy * uw[i, 0] / (2 * D)) * (w[i+1, 0] - w[i-1, 0])
-
         C[i, i-1] =  - ((dy * w[i, 0] * uw[i, 0]) / (2 * D)) - w[i, 0] + (w[i+1, 0] - w[i-1, 0])/4
-
         C[i, i+1] = ((dy * w[i, 0] * uw[i, 0]) / (2 * D)) - w[i, 0] - (w[i+1, 0] - w[i-1, 0])/4
         
     C[ny-1, ny-2] = - 2 * w[ny-1, 0]
-
-    C[ny-1, ny-1] =  (6 * w[ny-1, 0]) + delta + (dy2  * w[ny-1, 0] / (D * dt)) \
+    # removed v=0 term + (dy * vw[ny-1, 0] / D) * (-3*w[ny-1, 0] + 4 * w[ny-1, 1] - w[ny-1, 2]) 
+    C[ny-1, ny-1] = (6 * w[ny-1, 0]) + delta + (dy2  * w[ny-1, 0] / (D * dt)) \
         + (dy * w[ny-1, 0] / D) * (-3*vw[ny-1, 0] + 4 * vw[ny-1, 1] - vw[ny-1, 2]) \
         + (dy * w[ny-1, 0]/ (2 * D)) * (3*uw[ny-1, 0] - 4*uw[ny-2, 0] + uw[ny-3, 0]) + (dy * uw[ny-1, 0] / (2 * D)) * (3 * w[ny-1, 0] - 4 * w[ny-2, 0] + w[ny-3, 0])
 
@@ -190,5 +189,5 @@ def rad_solver_2Daxi(c0, w, n, uw, vw, param_dict):
 
     c = spsolve(A, F1d)
 
-    return n 
+    return c
 
