@@ -97,5 +97,12 @@ Solver*.py
 
 SensitivityAnalysis*.py and PSO*.py
 
+### Test files
+
+## Updates
+
+September 2021: All solvers and applications in 1D ready and tested. Next update will bring 2D file structure in line with 1D, and add sesntivity analysis and parameter sweep applications.
+
+Addition of flux boundary conditions projected October 2021. 
 
 
