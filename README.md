@@ -85,13 +85,15 @@ use the Python library Pyswarms to optimise input parameters to match a set mode
 
 ### Execution files
 
-Manager*.py OR Parameter Sweep*.py
+Manager*.py 
 
 Requires Solver and Preliminary 
 
 ### Supporting files
 
 Solver*.py
+
+Parameter Sweep*.py (uses Solver*.py)
 
 ### Application execution files
 
