@@ -1,6 +1,6 @@
 # reaction-advection-diffusion
 
-Georgina Al-Badri
+Author: Georgina Al-Badri
 georgina.kennedy.13@ucl.ac.uk
 
 1D and 2D axisymmetric solvers for reaction-advection-diffusion PDE. Also includes applications: parameter sweep, parameter sensitivity analysis (SALib), parameter optimisation (PSO - pyswarms). 
