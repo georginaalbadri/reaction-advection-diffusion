@@ -1,3 +1,5 @@
+[![Build Status](https://app.travis-ci.com/georginaalbadri/reaction-advection-diffusion.svg?branch=main)](https://app.travis-ci.com/georginaalbadri/reaction-advection-diffusion)
+
 # reaction-advection-diffusion
 
 Author: Georgina Al-Badri
