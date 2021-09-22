@@ -4,31 +4,20 @@ from matplotlib import cm
 import numpy as np
 from tqdm import tqdm
 import pyswarms as ps
-from Preliminary1D import InputVariables
-from Preliminary1D import InputSoluteParameters
-from PSOMinimiser1D import minimiser
+from Preliminary1D import InputGeometry, InputVariables, Nondimensionalise, InputSoluteParameters
+from PSOFunctions1D import minimiser
 
 
 #----------------------- SETUP MODEL PROBLEM 
 
-#-- set problem geometry 
-L = 5e-3  #length-scale [m]
-T = 1e3  #timescale [s]
+geometry_dict = InputGeometry(L = 1e-3, T = 1e3, nx = 400) 
 
-nx = 400 #number of grid points
-dx = 1/nx #dimensionless grid spacing
-dx2 = dx*dx
-
-geometry_dict =  {'L':L, 'T':T, 'nx':nx, 'dx':dx, 'dx2':dx2} 
-
-#-- set variables
 n, w, uw, parameter_dict = InputVariables(geometry_dict, n_option = "sinusoidal", nmin = 0.1, nmax = 0.2, m = 0.03)
 
-#-- set initial condition and solute parameters
 c0, param_dict = InputSoluteParameters(parameter_dict, c_int = 0, D = 1e-10, dt_mult = 10)
 
 
-#-- combine variables and parameters in single dictionary for pyswarms function minimiser 
+# combine variables and parameters in single dictionary for pyswarms function
 maindict = {'n':n, 'w':w, 'uw':uw, 'c0':c0, **param_dict}
 
 #-- set time to run model
@@ -39,54 +28,27 @@ nsteps = int(Tmax/dt)
 maindict['nsteps'] = nsteps
 print(nsteps)
 
-# ---------------- NONDIMENSIONALISE PARAMETER BOUNDS (use as applicable)
-#TODO: simplify this section 
+# ---------------- NONDIMENSIONALISE PARAMETER BOUNDS (change parameter name/bounds as applicable)
 
-# recover scalings/values needed
-T = maindict['T']
-L = maindict['L']
-cM = 1e-9 
-D = maindict['D']
-D1 = D * L * L / T #recover dimensional D
+parameters = ['alpha', 'kappa']
+dim_bounds = [[1e-13, 1e-11], [1e-14, 1e-12]]
 
-# change dimensional minval, max val for each parameter as required to optimise within these bounds
-
-#for D
-minval, maxval = 1e-14, 1e-10 #minimum and maximum dimensional value
-Dmin, Dmax = (T * minval) / (L**2), (T * maxval) / (L**2) #nondimensionalised
-
-#for alpha
-minval, maxval = 1e-13, 1e-11
-almin, almax = (minval * L * L) / (D1 * cM), (maxval * L * L) / (D1 * cM)
-
-#for kappa
-minval, maxval = 1e-14, 1e-12 
-kamin, kamax = (minval * L * L) / (D1 * cM), (maxval * L * L) / (D1 * cM)
-
-#for delta
-minval, maxval = 1e-5, 3e-4
-delmin, delmax = minval * L * L / D1, maxval * L * L / D1
-
-#for K
-Kmin, Kmax = minval / cM, maxval / cM
-
+min1 = Nondimensionalise(parameter_dict, dimval = dim_bounds[0][0], param_name = parameters[0])
+max1 = Nondimensionalise(parameter_dict, dimval = dim_bounds[0][1], param_name = parameters[0])
+min2 = Nondimensionalise(parameter_dict, dimval = dim_bounds[1][0], param_name = parameters[1])
+max2 = Nondimensionalise(parameter_dict, dimval = dim_bounds[1][1], param_name = parameters[1])
 
 
 #-------------------- CONFIGURE OPTIMISER
 
-#-- select parameter(s) to optimise, and specify bounds 
-
-#x = alpha, kappa - check this matches in PSOrad_solver_1D
-
-dim = 2 #number of parameters to optimise
-bounds = ([almin, almax], [kamin, kamax]) # (dimensionless) bounds of parameters to optimise
+dim = len(parameters)
+bounds = ([min1, max1], [min2, max2]) #(dimensionless) bounds from above
 options = {'c1': 1.5, 'c2': 1.5, 'w': 0.5} #pyswarms global parameters 
 
-# setup optimiser with above options 
 optimizer = ps.single.GlobalBestPSO(n_particles = 20, dimensions = dim, options=options, bounds=bounds)
 
 
-#----------------- RUN OPTIMISER - runs 'minimiser' function  
+#----------------- RUN OPTIMISER - runs 'minimiser' function in particle swarm 
 
 cost, pos = optimizer.optimize(minimiser, iters=100, n_processes = 4, **maindict)
 
@@ -100,33 +62,20 @@ with open('pywsarms_output.txt', 'a') as f:
 
 
 
-# ------------- Test optimal parameter values in function ------------------#
+# -------------------- TEST OUTPUT -------------------------#
 
 x = pos
 
-#-- set problem geometry 
-L = 5e-3  #length-scale [m]
-T = 1e3  #timescale [s]
+geometry_dict = InputGeometry(L = 1e-3, T = 1e3, nx = 400) 
 
-nx = 400 #number of grid points
-dx = 1/nx #dimensionless grid spacing
-dx2 = dx*dx
-
-geometry_dict =  {'L':L, 'T':T, 'nx':nx, 'dx':dx, 'dx2':dx2} 
-
-#-- set variables
 n, w, uw, parameter_dict = InputVariables(geometry_dict, n_option = "sinusoidal", nmin = 0.1, nmax = 0.2, m = 0.03)
 
-#-- set initial condition and solute parameters
 c0, param_dict = InputSoluteParameters(parameter_dict, c_int = 0, D = 1e-10, dt_mult = 10)
 
 maindict = maindict = {'n':n, 'w':w, 'uw':uw, 'c0':c0, **param_dict}
 
-T = 0.2
-dt = param_dict['dt']
-nsteps = int(T/dt)
+nsteps = int(Tmax/dt)
 maindict['nsteps'] = nsteps
-
 
 for t in tqdm(range(nsteps)):
     maindict = PSOrad_solver_1D(x, **maindict)

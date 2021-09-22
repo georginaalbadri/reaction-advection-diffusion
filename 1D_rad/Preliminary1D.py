@@ -4,11 +4,16 @@ import sys
 
 
 
-#---------------------------------------------------#
+# Functions to sequentially create parameter dictionary 
 
-# CELL/WATER VOLUME DISTRIBUTIONS
 
-#---------------------------------------------------#
+def InputGeometry(L = 5e-3, T = 1e3, nx = 500):
+
+    dx = 1/nx #dimensionless grid spacing
+    dx2 = dx*dx
+    geometry_dict =  {'L':L, 'T':T, 'nx':nx, 'dx':dx, 'dx2':dx2} 
+
+    return geometry_dict
 
 
 def InputVariables(parameters_dict, n_option = "random", nmin = 0.1, nmax = 0.2, m = 0.03):
@@ -72,33 +77,6 @@ def InputVariables(parameters_dict, n_option = "random", nmin = 0.1, nmax = 0.2,
 
     return n, w, uw, parameters_dict
 
-
-def Nondimensionalise(parameter_dict, cM = 1e-9, dimval = 1e-10, param_name = 'D'):
-
-    L = parameter_dict['L']
-    T = parameter_dict['T']
-
-    #nondimensionalise as appropriate
-    if param_name in ['D']:
-        val = (T * dimval) / (L**2) 
-
-    if param_name in ['alpha', 'kappa']:
-        val = (dimval * T / cM)
-
-    if param_name in ['delta']:
-        val = dimval * T 
-
-    if param_name in ['K']:
-        val = dimval / cM
-
-    return val
-
-
-#------------------------------------------------------#
-
-# SOLUTE INITIAL CONDITIONS AND PARAMETERS
-
-#------------------------------------------------------#
     
 
 def InputSoluteParameters(parameters_dict, cM = 1e-9, c_int = 0, D = 1e-10, alpha = 1e-11, kappa = 1e-14, K = 0.05, delta = 5*1e-5, dt_mult = 10):
@@ -152,3 +130,24 @@ def InputSoluteParameters(parameters_dict, cM = 1e-9, c_int = 0, D = 1e-10, alph
 
 
 
+# Function to automate nondimensionalisation of parameter values 
+
+def Nondimensionalise(parameter_dict, cM = 1e-9, dimval = 1e-10, param_name = 'D'):
+
+    L = parameter_dict['L']
+    T = parameter_dict['T']
+
+    #nondimensionalise as appropriate
+    if param_name in ['D']:
+        val = (T * dimval) / (L**2) 
+
+    if param_name in ['alpha', 'kappa']:
+        val = (dimval * T / cM)
+
+    if param_name in ['delta']:
+        val = dimval * T 
+
+    if param_name in ['K']:
+        val = dimval / cM
+
+    return val

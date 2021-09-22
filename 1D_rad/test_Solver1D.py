@@ -1,8 +1,9 @@
+from Preliminary1D import InputGeometry
+from Preliminary1D import InputVariables
+from Preliminary1D import InputSoluteParameters
 import numpy as np
-import matplotlib.pyplot as plt
 from pytest import approx
 from Solver1D import rad_solver_1D
-import sys
 
 
 
@@ -13,29 +14,17 @@ def test_Solver1D():
     
     """
 
-    #--  parameter values
-    ny = 1000
-    dy = 1/ny
-    dy2 = dy*dy
-    dt = 0.001
+    #--  setup problem
 
-    alpha = 0
-    delta = 0
-    kappa = 0
-    K = 0.1
+    geom_dict = InputGeometry(L = 1e-3, T = 1e3, nx = 1000)
 
-    D = 0.1
+    n, w, uw, parameters_dict = InputVariables(geom_dict)
+
+    c0, param_dict = InputSoluteParameters(parameters_dict,  alpha = 0, kappa = 0, delta = 0)
 
     #-- initial conditions, variables 
-    c0 = 0.1*np.random.rand(ny)
-    m = 0.03
-    phi = 1 - m
-    n = 0.03 * np.ones((ny))
-    w = phi - n 
-    vw = np.zeros((ny))
-
-    param_dict = {'L':1, 'T':1e3, 'ny':ny, 'dy':dy, 'dy2':dy2, 'phi':phi, 'm':m, 'dt':dt, \
-        'cint':c0, 'D':D, 'alpha':alpha, 'kappa':kappa, 'K':K, 'delta':delta}
+    nx = param_dict['nx']
+    c0 = 0.1*np.random.rand(nx)
 
     #-- calculate total initial solute
     cint = np.sum(c0)
@@ -44,7 +33,7 @@ def test_Solver1D():
     nsteps = 10
 
     for t in range(nsteps):
-        c = rad_solver_1D(c0, n, w, vw, param_dict)
+        c = rad_solver_1D(c0, n, w, uw, param_dict)
         c0 = c.copy()
 
     #-- calculate total final solute

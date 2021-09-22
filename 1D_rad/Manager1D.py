@@ -3,8 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import time 
 from tqdm import tqdm
-
-from Preliminary1D import InputVariables
+from Preliminary1D import InputGeometry, InputVariables
 from Preliminary1D import InputSoluteParameters
 from Solver1D import rad_solver_1D
 from ParameterSweep1D import ParamSweep1D
@@ -17,20 +16,10 @@ from ParameterSweep1D import ParamSweepPlot1D
 
 #-------------------------------------------------#
 
-#-- set problem geometry 
-L = 5e-3  #length-scale [m]
-T = 1e3  #timescale [s]
+geometry_dict = InputGeometry(L = 1e-3, T = 1e3, nx = 400) 
 
-nx = 500 #number of grid points
-dx = 1/nx #dimensionless grid spacing
-dx2 = dx*dx
-
-geometry_dict =  {'L':L, 'T':T, 'nx':nx, 'dx':dx, 'dx2':dx2} 
-
-#-- set variables
 n, w, uw, parameter_dict = InputVariables(geometry_dict, n_option = "sinusoidal", nmin = 0.1, nmax = 0.2, m = 0.03)
 
-#-- set initial condition and solute parameters
 c0, param_dict = InputSoluteParameters(parameter_dict, c_int = 0, D = 1e-10, dt_mult = 10)
 
 
@@ -42,7 +31,7 @@ c0, param_dict = InputSoluteParameters(parameter_dict, c_int = 0, D = 1e-10, dt_
 
 
 #-- calculate number of timesteps to run 
-Tmax = 0.5 #maximum time to run 
+Tmax = 0.5 #maximum (dimensionless) time to run 
 dt = param_dict['dt']
 nsteps = int(Tmax/dt)
 
@@ -53,14 +42,14 @@ start_time = time.time()
 
 
 #-- iterate RAD solver over number of timesteps
-
 for t in tqdm(range(nsteps)):
     c = rad_solver_1D(c0, n, w, uw, param_dict)
     c0 = c.copy() #update previous timestep value
-    print
+
 
 #-- plot initial and final distribution on same graph
 cint = param_dict['c0']
+
 
 plt.figure()
 plt.plot(cint, 'b')
@@ -76,21 +65,12 @@ plt.savefig(f'solute_dist_T{Tmax}.png', dpi = 300)
 
 #--------------------------------------------------------------------#
 
-#-- set problem geometry 
-L = 5e-3  #length-scale [m]
-T = 1e3  #timescale [s]
+geometry_dict = InputGeometry(L = 1e-3, T = 1e3, nx = 400) 
 
-nx = 500 #number of grid points
-dx = 1/nx #dimensionless grid spacing
-dx2 = dx*dx
-
-geometry_dict =  {'L':L, 'T':T, 'nx':nx, 'dx':dx, 'dx2':dx2} 
-
-#-- set variables
 n, w, uw, parameter_dict = InputVariables(geometry_dict, n_option = "sinusoidal", nmin = 0.1, nmax = 0.2, m = 0.03)
 
-#-- set initial condition and solute parameters
 c0, param_dict = InputSoluteParameters(parameter_dict, c_int = 0, D = 1e-10, dt_mult = 10)
+
 
 param_list = [1e-13, 1e-12, 1e-11]
 
@@ -98,7 +78,7 @@ Tmax = 1
 dt = param_dict['dt']
 nsteps = int(Tmax / dt)
 
-#-- run parameter sweep for specified parameter
+#-- run parameter sweep for specified parameter values
 clist = ParamSweep1D(c0, n, w, uw, param_list, param_dict, param_name = 'alpha', nsteps = nsteps)
 
 #-- plot results on single figure 
