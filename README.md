@@ -9,13 +9,14 @@ georgina.kennedy.13@ucl.ac.uk
 
 Python 3.7 
 
-numpy==1.20.3
-matplotlib==3.0.3
-tqdm==4.31.1
-pytest==4.3.1
-scipy==1.2.1
-SALib==1.3.13
+pytest==5.3.5
+numpy==1.16.4
+scipy==1.3.1
 pyswarms==1.1.0
+matplotlib==3.1.1
+tqdm==4.32.1
+SALib==1.4.5
+
 
 ## Introduction
 
