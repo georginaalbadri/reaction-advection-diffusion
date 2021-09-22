@@ -7,19 +7,6 @@ georgina.kennedy.13@ucl.ac.uk
 
 1D and 2D axisymmetric solvers for reaction-advection-diffusion PDE. Also includes applications: parameter sweep, parameter sensitivity analysis (SALib), parameter optimisation (PSO - pyswarms). 
 
-## Dependencies
-
-Python 3.7 
-
-pytest==5.3.5
-numpy==1.16.4
-scipy==1.3.1
-pyswarms==1.1.0
-matplotlib==3.1.1
-tqdm==4.32.1
-SALib==1.4.5
-
-
 ## Introduction
 
 ### Solvers
@@ -109,5 +96,4 @@ SensitivityAnalysis*.py and PSO*.py
 September 2021: All solvers and applications in 1D ready and tested. Next update will bring 2D file structure in line with 1D, and add sesntivity analysis and parameter sweep applications.
 
 Addition of flux boundary conditions projected October 2021. 
-
 
