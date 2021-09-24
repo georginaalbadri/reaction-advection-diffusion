@@ -61,8 +61,11 @@ def multiprocessing_func(param_values_sample):
 
     #-- calculate number of timesteps
     dt = param_dict['dt']
-    Tmax = 0.1
+    Tmax = 1
     nsteps = int(Tmax/dt)
+    
+    assert nsteps != 0 
+
 
     ##-- optional - to analyse multiple timepoints
     #tnum = 2 #number of timepoints to capture sensitivity 
@@ -83,7 +86,6 @@ def multiprocessing_func(param_values_sample):
 
     # for single output at Tmax
     ctot = np.sum(c[:])
-    print(ctot)
 
     # for multiple timepoints, return ctotlist
     return ctot
