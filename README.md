@@ -9,6 +9,10 @@ georgina.kennedy.13@ucl.ac.uk
 
 ## Introduction
 
+### ExampleCase.ipynb (1D)
+
+This Jupyter notebook displays outputs for an example use of the following code/applications contained in this repository. 
+
 ### Solvers
 
 This repository contains solvers for a reaction-advection-diffusion PDE in 1D and 2D axisymmetric (r-z axis). The solver files
