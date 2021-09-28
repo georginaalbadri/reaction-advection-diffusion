@@ -86,6 +86,86 @@ def rad_solver_1D(c0, n, w, vw, param_dict):
     return c
 
 
+
+
+#-----------------------------------------------------------------
+
+# Reaction-advection-diffusion matrix solver for 1D geometry w/ flow
+# c=0 on left boundary, no diffusive flux on right boundary 
+
+#------------------------------------------------------------------
+
+
+def rad_solver_flow_1D(c0, n, w, vw, param_dict): 
+
+
+    """
+    # 1D reaction-advection-diffusion solver for solute c
+
+    Variables:
+    c0 - solute distribution at previous timestep
+    w - water (solvent) distribution
+    n - cell volume fraction that upregulates/uptakes solute
+    vw - water (solvent) velocity
+
+    Parameters:
+    D - diffusion coefficient of solute
+    alpha - production rate of solute by cells
+    kappa - solution uptake rate by cells (Michaelis-Menten kinetics)
+    K - concentration of solute at which uptake is half-maximal 
+    delta - degradation rate of solute in solvent
+    ny - number of grid points
+    dy - grid spacing
+    dy2 - dy*dy square of grid spacing 
+    dt - timestep 
+
+    """
+    L, T, ny, dy, dy2, phi, m, dt, cint, Dc, alpha, kappa, K, delta = param_dict.values()
+
+    #-- Matrix A (to construct Ac = B matrix equation)
+    # i index for matrix A corresponds to i+1 index for global variables 
+
+    A = np.zeros((ny-1, ny-1))
+
+    for i in range(0, ny-2):
+        A[i, i] = (w[i+1] / dt) + (w[i+1] / (2 * dy)) * (vw[i+2] - vw[i]) \
+            + (vw[i+1] / (2 * dy)) * (w[i+2] - w[i]) + ((2 * Dc * w[i+1]) / (dy2)) + delta
+
+    for i in range(1, ny-2):
+        A[i, i-1] = - ((w[i+1] * vw[i+1]) / (2 * dy)) + (Dc / (4 * dy2)) * (w[i+2] - w[i]) - ((Dc * w[i+1]) / dy2)
+
+    for i in range(0, ny-2):
+        A[i, i+1] =  ((w[i+1] * vw[i+1]) / (2 * dy)) - (Dc / (4 * dy2)) * (w[i+2] - w[i]) - ((Dc * w[i+1]) / dy2)
+                                      
+    #no flux on upper boundary
+
+    A[ny-2, ny-2] = (w[ny-1]/ dt) + (w[ny-1] / (2 * dy)) * (3 * vw[ny-1] - 4 * vw[ny-2] + vw[ny-3]) \
+         + (vw[ny-1] / (2*dy)) * (3 * w[ny-1] - 4 * w[ny-2] + w[ny-3]) + ((2 * Dc * w[ny-1])/ dy2) + delta
+
+    A[ny-2, ny-3] = - ((2 * Dc * w[ny - 1]) / dy2) 
+
+    A = sparse.csr_matrix(A)
+
+    #-- source terms B
+
+    B = np.zeros((ny-1))
+
+    for i in range(ny-1):     
+        B[i] =  ((w[i+1] * c0[i+1]) / dt) 
+        # additional (optional) reaction terms (production and uptake)
+        B[i] += (alpha * n[i+1] * w[i+1]) - ((kappa * n[i+1] * c0[i+1] * w[i+1]) / (K + c0[i+1]))             
+
+    #-- solve matrix equation for solute c
+
+    c = np.zeros((ny))
+    c[1:] = spsolve(A, B)
+    
+    return c
+
+
+
+
+
 #-----------------------------------------------------------------
 
 # Reaction-advection-diffusion matrix solver for 1D geometry for use in PSO

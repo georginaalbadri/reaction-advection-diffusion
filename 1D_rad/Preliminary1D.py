@@ -9,6 +9,15 @@ import sys
 
 def InputGeometry(L = 5e-3, T = 1e3, nx = 500):
 
+    """
+    Creates dictionary containing length and time scalings, plus grid geometry. 
+
+    L: lengthscale [m]
+    T: timescale [s]
+    nx: number of grid points
+    
+    """
+
     dx = 1/nx #dimensionless grid spacing
     dx2 = dx*dx
     geometry_dict =  {'L':L, 'T':T, 'nx':nx, 'dx':dx, 'dx2':dx2} 
@@ -16,7 +25,7 @@ def InputGeometry(L = 5e-3, T = 1e3, nx = 500):
     return geometry_dict
 
 
-def InputVariables(parameters_dict, n_option = "random", nmin = 0.1, nmax = 0.2, m = 0.03):
+def InputVariables(parameters_dict, n_option = "random", vel = 1e-3, nmin = 0.1, nmax = 0.2, m = 0.03):
     """
     Returns distributions for cells, water (solvent), and water (solvent) velocity 
 
@@ -25,6 +34,9 @@ def InputVariables(parameters_dict, n_option = "random", nmin = 0.1, nmax = 0.2,
     - Random produces array of values 'nmin' to 'nmax' randomly distributed.
     - Linear produces gradient distribution from 'nmin' at LHS to 'nmax' at RHS
     - Sinusoidal produces an oscillating distribution with minima at 'nmin' and maxima at 'nmax' 
+
+    Other inputs:
+    - vel sets constant water velocity across domain 
 
     Variables:
     n - cell volume fraction [-]
@@ -69,8 +81,9 @@ def InputVariables(parameters_dict, n_option = "random", nmin = 0.1, nmax = 0.2,
     # water volume fraction dependent on cell distribution via no voids constraint (n + w + m = 1)
     w = phi - n 
 
-    # water velocity
-    uw = np.zeros((nx))
+    # water velocity based on 'vel' input 
+    #uw = np.zeros((nx))
+    uw = vel * np.ones((nx))
 
     parameters_dict['phi'] = phi
     parameters_dict['m'] = m
